@@ -1,6 +1,7 @@
 package app.entities;
 
-public class User {
+
+public class User{
     private String name;
     private String password;
     private String role;
@@ -16,6 +17,7 @@ public class User {
     public String getName() {
         return name;
     }
+
 
     public void setName(String name) {
         this.name = name;
@@ -47,6 +49,14 @@ public class User {
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         return password != null ? password.equals(user.password) : user.password == null;
 
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
     }
 
 //    @Override

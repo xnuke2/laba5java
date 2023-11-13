@@ -1,3 +1,4 @@
+<%@ page import="app.entities.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -61,16 +62,24 @@
                 </span>
             </div>
         </div>
-        <button href="" class="glow-on-hover">
-            Личный кабинет
-        </button>
         <button onclick="location.href='/laba5java/'" class="glow-on-hover">
             Главная
         </button>
         <button onclick="location.href='/laba5java/add'" class="glow-on-hover">
-            Регистрация(войти)
+            Регистрация
         </button>
 
+        <%
+            if(request.getSession().getAttribute("userName") != null){
+                out.println("<button onclick=\"location.href='/laba5java/login'\" class=\"glow-on-hover\">\n" +
+                         request.getSession().getAttribute("userName") + "</button>");
+//                out.println("<div class=backColor class=glow-on-hover> <div class="+"in"+
+//                        "> <span>"+request.getSession().getAttribute("userName")+" </span> </div> </div>");
+            }else {
+                out.println("<button onclick=\"location.href='/laba5java/login'\" class=\"glow-on-hover\">\n" +
+                        "Вход\n" + "</button>");
+            }
+        %>
     </div>
     </body>
 </html>

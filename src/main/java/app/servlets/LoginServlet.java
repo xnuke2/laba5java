@@ -11,29 +11,43 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AddServlet extends HttpServlet {
+public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher requestDispatcher = req.getRequestDispatcher("add.jsp");
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("login.jsp");
         req.setAttribute("time", new java.util.Date().getTime());
         requestDispatcher.forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getSession().setAttribute("userName", null);
         req.setAttribute("Error", null);
         String name = req.getParameter("name").trim();
         String password = req.getParameter("pass").trim();
-        DatabaseHandler dbhandler=new DatabaseHandler();
-        if(dbhandler.CheckUserIndb(name)){
-            req.setAttribute("Error", "Пользователь с таким именем уже есть");
+        if(name.equals("")||password.equals("")){
+            req.setAttribute("Error", "Одно из полей пусто");
             doGet(req, resp);
             return;
         }
+        DatabaseHandler dbHandler= new DatabaseHandler();
         User user =new User(name,password);
-        user.setRole("basic");
-        dbhandler.singUpUser(user);
-        req.getSession().setAttribute("userName", name);
+        ResultSet result = dbHandler.getUser(user);
+        int counter =0;
+        try {
+            while (result.next()){
+                counter++;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        if(counter>=1){
+            req.getSession().setAttribute("userName", name);
+            doGet(req, resp);
+            return;
+        }
+
+        req.setAttribute("Error", "Неккоректный логин или пароль");
         doGet(req, resp);
     }
 }
