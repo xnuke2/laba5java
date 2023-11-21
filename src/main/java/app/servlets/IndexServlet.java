@@ -10,6 +10,7 @@ public class IndexServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("index.jsp");
+        req.getSession().setMaxInactiveInterval(1800);
         req.setAttribute("time", new java.util.Date().getTime());
         requestDispatcher.forward(req, resp);
     }

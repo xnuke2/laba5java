@@ -14,6 +14,7 @@ import java.sql.SQLException;
 public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getSession().setMaxInactiveInterval(1800);
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("login.jsp");
         req.setAttribute("time", new java.util.Date().getTime());
         requestDispatcher.forward(req, resp);

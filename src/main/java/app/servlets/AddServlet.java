@@ -14,6 +14,7 @@ import java.sql.SQLException;
 public class AddServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getSession().setMaxInactiveInterval(1800);
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("add.jsp");
         req.setAttribute("time", new java.util.Date().getTime());
         requestDispatcher.forward(req, resp);
@@ -24,6 +25,16 @@ public class AddServlet extends HttpServlet {
         req.setAttribute("Error", null);
         String name = req.getParameter("name").trim();
         String password = req.getParameter("pass").trim();
+        if(name.equals("")||password.equals("")){
+            req.setAttribute("Error", "Одно из полей пусто");
+            doGet(req, resp);
+            return;
+        }
+        if(password.length()<8){
+            req.setAttribute("Error", "Пароль слишком короткий");
+            doGet(req, resp);
+            return;
+        }
         DatabaseHandler dbhandler=new DatabaseHandler();
         if(dbhandler.CheckUserIndb(name)){
             req.setAttribute("Error", "Пользователь с таким именем уже есть");

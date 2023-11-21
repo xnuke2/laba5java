@@ -69,12 +69,13 @@
 
     <%
         if(request.getSession().getAttribute("userName") != null){
-            out.println("<div class=backColor class=glow-on-hover> <div class="+"in"+
-                    "> <span>"+request.getSession().getAttribute("userName")+" </span> </div> </div>");
+            out.println("<button onclick=\"location.href='/laba5java/personalAccount'\" class=\"glow-on-hover\">\n" +
+                    request.getSession().getAttribute("userName") + "</button>");
+//                out.println("<div class=backColor class=glow-on-hover> <div class="+"in"+
+//                        "> <span>"+request.getSession().getAttribute("userName")+" </span> </div> </div>");
         }else {
-            out.println("        <button onclick=\"location.href='/laba5java/login'\" class=\"glow-on-hover\">\n" +
-                    "            Вход\n" +
-                    "        </button>");
+            out.println("<button onclick=\"location.href='/laba5java/login'\" class=\"glow-on-hover\">\n" +
+                    "Вход\n" + "</button>");
         }
     %>
 </div>

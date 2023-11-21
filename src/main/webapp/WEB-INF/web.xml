@@ -45,4 +45,20 @@
     <servlet-name>list</servlet-name>
     <url-pattern>/list</url-pattern>
   </servlet-mapping>
+  <!-- personalAccount servlet -->
+  <servlet>
+    <servlet-name>personalAccount</servlet-name>
+    <servlet-class>app.servlets.personalAccountServlet</servlet-class>
+    <multipart-config>
+      <max-file-size>1048576</max-file-size>
+      <max-request-size>2097152</max-request-size>
+      <file-size-threshold>524288</file-size-threshold>
+    </multipart-config>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>personalAccount</servlet-name>
+    <url-pattern>/personalAccount</url-pattern>
+  </servlet-mapping>
+
 </web-app>
