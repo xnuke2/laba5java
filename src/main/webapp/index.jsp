@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <title>My super project!</title>
         <link rel="stylesheet" href="styleMain.css">
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
     <!-- шапка сайта -->
@@ -68,6 +69,7 @@
         <button onclick="location.href='/laba5java/add'" class="glow-on-hover">
             Регистрация
         </button>
+        <button onclick="location.href='/laba5java/list'" class = "glow-on-hover">Поиск</button>
 
         <%
             if(request.getSession().getAttribute("userName") != null){
