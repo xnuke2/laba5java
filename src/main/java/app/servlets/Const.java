@@ -1,11 +1,25 @@
 package app.servlets;
 
 public class Const {
-    public static final String USER_TABLE = "users";
+    public static final String USERS_TABLE = "users";
     public static final String USERS_ID = "idusers";
     public static final String USERS_NAME = "Name";
     public static final String USERS_PASSWORD = "password";
     public static final String USERS_ROLE = "role";
     public static final String USERS_USERPHOTO = "avatar";
 
+    public static final String NEWS_TABLE = "news";
+    public static final String NEWS_IDNEWS = "idnews";
+    public static final String NEWS_USERNAME = "UserName";
+    public static final String NEWS_NAMEOFPOST = "NameOfPost";
+    public static final String NEWS_CONTENTOFPOST = "ContentOfPost";
+    public static final String NEWS_PIC = "Pic";
+    public static final String POSTS_TABLE = "posts";
+    public static final String POSTS_IDPOSTS = "idposts";
+    public static final String POSTS_NAMEOFPOST = "NameOfPost";
+    public static final String POSTS_CONTENTOFPOST = "ContentOfPost";
+    public static final String POSTS_USERNAME = "UserName";
+    public static final String NUM_OF_PEOPLE_TABLE = "num_of_people";
+    public static final String NUM_OF_PEOPLE_ID = "idnum_of_people";
+    public static final String NUM_OF_PEOPLE_NUM = "num";
 }

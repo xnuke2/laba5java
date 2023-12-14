@@ -1,0 +1,24 @@
+.ear{
+    margin: 10px 0px 10px 0px;
+    display: flex;
+    justify-content: center;
+}
+
+#qwerty{
+    width: 300px;
+}
+
+.news{
+    text-align: center;
+    align-content: center;
+    border: solid black;
+}
+
+#sub{
+    align-content: center;
+    text-align: center;
+}
+
+#left{
+    float: left;
+}

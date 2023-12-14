@@ -3,13 +3,18 @@
 <%@page import="java.io.*,java.util.*, javax.servlet.*" %>
 <%@page import="java.text.DateFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
+<%@ page import="app.servlets.DatabaseHandler" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="app.entities.User" %>
 
 <html>
     <head>
         <title>Users</title>
         <link rel="stylesheet" href="styleMain.css">
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
+    <!--Шапка сайта-->
     <div class="profile-head" >
         <script type="text/javascript">
             var currentDate = new Date(<%=request.getAttribute("time")%>);
@@ -58,9 +63,17 @@
                 <span>
                     Счётчик вошедших:
                 </span>
-                <span id = "logined">
+                <%--<span id = "logined">
                     1000
-                </span>
+                </span>--%>
+                <%
+                    DatabaseHandler dbhandlercount = new DatabaseHandler();
+                    ResultSet datacount = dbhandlercount.NumOfPeopleSelect();
+                    while (datacount.next()){
+                        String num = datacount.getString("num");
+                        out.println("<span>"+ num +"</span>");
+                    }
+                %>
             </div>
         </div>
         <button onclick="location.href='/laba5java/'" class="glow-on-hover">
@@ -69,7 +82,9 @@
         <button onclick="location.href='/laba5java/add'" class="glow-on-hover">
             Регистрация
         </button>
-        <button onclick="location.href='/laba5java/list'" class = "glow-on-hover">Поиск</button>
+        <button onclick="location.href='/laba5java/list'" class = "glow-on-hover">
+            Поиск
+        </button>
 
         <%
             if(request.getSession().getAttribute("userName") != null){
@@ -83,8 +98,66 @@
             }
         %>
     </div>
-    <input label="awd" type="text" class="ear" id="qwerty">
-    <div class="window"> dsfghjkmnbvcdrtyuikmnhgf</div>
+    <%
+        if (request.getAttribute("Error") != null) {
+            out.println("<p>" + request.getAttribute("Error") + " </p>");
+            request.setAttribute("Error",null);
+        }
+        if(request.getSession().getAttribute("userName") != null){
+            DatabaseHandler dbhandler = new DatabaseHandler();
+            ResultSet data = dbhandler.SearchList();
+            ResultSet tmp = dbhandler.getUser(new User(request.getSession().getAttribute("userName").toString(),"12345678"));
+            if(tmp.next() && (tmp.getString("role").equals("admin"))){
+                while(data.next()){
+                    String user = data.getString("Name");
+                    out.println("<form method=\"post\">" +
+                            "<div class=\"ear\">" +
+                            "<button name=\"submit\" type=\"submit\" value=\"submit\" onclick=\"location.href='/laba5java/otherAccount'\">" +
+                            "<input name=\"user\" value=\""+user+"\" onkeyup=\"this.value = this.value.replace(/[^\\d]/g,'');\">" +
+                            "</button> " +
+                            "<input list=\"listing\" type=\"text\" id=\"qwerty\" name=\"role\">" +
+                            "<datalist id=\"listing\">\n" + "<option value=\"moderator\"></option>\n" + "<option value=\"basic\"></option>" +
+                            "</datalist>" +
+                            "<button name=\"submit\" value=\"Change\" type=\"submit\" onclick=\"request.getSession().setAttribute(\"name\","+ user +")\">Изменить роль</button>" +
+                            "</div>" +
+                            "</form>");
+                }
+            }
+            else{
+                while(data.next()){
+                    String user = data.getString("Name");
+                    out.println("<form method=\"post\">" + "<div class=\"ear\">" +
+                            "<button name=\"submit\" value=\"submit\" type=\"submit\">" +
+                            "<input name=\"user\" value=\""+user+"\" onkeyup=\"this.value = this.value.replace(/[^\\]/g,'');\">" +
+                            "</button>" +
+                            "</div>" + "</form>");
+                }
+            }
+        }
+    %>
+    <!--<input name="user" value="awdawd" onkeyup="this.value = this.value.replace(/[^\\]/g,'');">-->
+    <%--<div class="ear">
+    <input list="listing" type="text" id="qwerty">
+        <datalist id="listing">
+            <option value="tre"></option>
+            <option value="кек"></option>
+            <option value="["></option>
+        </datalist>
+    </div>--%>
+    <%--<div id="testir">
+        <div class="news">dfghjk</div>
+    </div>--%>
+
+    <%--<label for="ice-cream-choice">Choose a flavor:</label>
+    <input list="ice-cream-flavors" id="ice-cream-choice" name="ice-cream-choice" />
+
+    <datalist id="ice-cream-flavors">
+        <option value="Chocolate"></option>
+        <option value="Coconut"></option>
+        <option value="Mint"></option>
+        <option value="Strawberry"></option>
+        <option value="Vanilla"></option>
+    </datalist>--%>
     <!--<script type="text/javascript">
     var currentDate = new Date(<%=request.getAttribute("time")%>);
     function run() {

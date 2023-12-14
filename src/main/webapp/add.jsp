@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="app.entities.User" %>
+<%@ page import="app.servlets.DatabaseHandler" %>
+<%@ page import="java.sql.ResultSet" %>
 <html>
     <head>
         <title>Registration</title>
@@ -55,9 +57,17 @@
                 <span>
                     Счётчик вошедших:
                 </span>
-                <span id = "logined">
+                <%--<span id = "logined">
                     1000
-                </span>
+                </span>--%>
+                <%
+                    DatabaseHandler dbhandlercount = new DatabaseHandler();
+                    ResultSet datacount = dbhandlercount.NumOfPeopleSelect();
+                    while (datacount.next()){
+                        String num = datacount.getString("num");
+                        out.println("<span>"+ num +"</span>");
+                    }
+                %>
             </div>
         </div>
         <button onclick="location.href='/laba5java/'" class="glow-on-hover">
@@ -65,6 +75,9 @@
         </button>
         <button onclick="location.href='/laba5java/add'" class="glow-on-hover">
             Регистрация
+        </button>
+        <button onclick="location.href='/laba5java/list'" class = "glow-on-hover">
+            Поиск
         </button>
 
         <%
@@ -79,7 +92,6 @@
             }
         %>
     </div>
-
 
         <div>
             <%

@@ -60,5 +60,13 @@
     <servlet-name>personalAccount</servlet-name>
     <url-pattern>/personalAccount</url-pattern>
   </servlet-mapping>
-
+  <!-- otherAccount servlet-->
+  <servlet>
+    <servlet-name>otherAccount</servlet-name>
+    <servlet-class>app.servlets.otherAccountServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>otherAccount</servlet-name>
+    <url-pattern>/otherAccount</url-pattern>
+  </servlet-mapping>
 </web-app>

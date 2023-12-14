@@ -4,7 +4,8 @@ public class User{
     private String password;
     private String role;
 
-    public User() {
+    public User(Object userName, String password) {
+        this.password = password;
     }
 
     public User(String name, String password) {

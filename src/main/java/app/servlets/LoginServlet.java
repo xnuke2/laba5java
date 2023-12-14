@@ -34,18 +34,19 @@ public class LoginServlet extends HttpServlet {
         DatabaseHandler dbHandler= new DatabaseHandler();
         User user =new User(name,password);
         ResultSet result = dbHandler.getUser(user);
-        int counter =0;
+        dbHandler.NumOfPeopleUpdate();
+        int counter = 0;
         try {
-            while (result.next()){
-                counter++;
+            if (result.next()){
+                if(result.getString(Const.USERS_PASSWORD).equals(password)){
+                    req.getSession().setAttribute("userName", name);
+                    doGet(req, resp);
+                    return;
+                }
+
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }
-        if(counter>=1){
-            req.getSession().setAttribute("userName", name);
-            doGet(req, resp);
-            return;
         }
 
         req.setAttribute("Error", "Неккоректный логин или пароль");

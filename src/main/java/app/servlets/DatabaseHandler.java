@@ -2,14 +2,9 @@ package app.servlets;
 
 import app.entities.User;
 
-import javax.lang.model.element.Name;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.ResultSet;
+import java.sql.*;
 
 public class DatabaseHandler extends config {
     Connection dbConnection;
@@ -22,7 +17,7 @@ public class DatabaseHandler extends config {
 
     public void singUpUser(User user){
         try {
-            String insert = "INSERT INTO "+Const.USER_TABLE+"("+Const.USERS_NAME+","+Const.USERS_PASSWORD+","
+            String insert = "INSERT INTO "+Const.USERS_TABLE +"("+Const.USERS_NAME+","+Const.USERS_PASSWORD+","
                     +Const.USERS_ROLE+")"+"VALUES(?,?,?)";
             PreparedStatement prSt =getDbConnection().prepareStatement(insert);
             prSt.setString(1, user.getName());
@@ -39,17 +34,17 @@ public class DatabaseHandler extends config {
         try {
             PreparedStatement ps=null;
             if (file.equals(null)){
-                String sql = "UPDATE "+Const.USER_TABLE+" SET "+ Const.USERS_NAME+"= ? , "
+                String sql = "UPDATE "+Const.USERS_TABLE +" SET "+ Const.USERS_NAME+"= ? , "
                         + Const.USERS_PASSWORD+ "= ? WHERE "+Const.USERS_NAME +" = ?";
                 ps = getDbConnection().prepareStatement(sql);
                 ps.setObject(1, newName);
                 ps.setObject(2, password);
                 ps.setString(3, name);
             }else {
-                String sql = "UPDATE " + Const.USER_TABLE + " SET " + Const.USERS_USERPHOTO + "= ? , "
+                String sql = "UPDATE " + Const.USERS_TABLE + " SET " + Const.USERS_USERPHOTO + "= ? , "
                         + Const.USERS_NAME + "= ? , " + Const.USERS_PASSWORD + "= ? WHERE " + Const.USERS_NAME + " = ?";
                 ps = getDbConnection().prepareStatement(sql);
-                ps.setObject(1, file);
+                ps.setBlob(1, file);
                 ps.setObject(2, newName);
                 ps.setObject(3, password);
                 ps.setString(4, name);
@@ -64,7 +59,7 @@ public class DatabaseHandler extends config {
     }
     public ResultSet getUser(User user){
         ResultSet resSet = null;
-        String select = "SELECT * FROM "+ Const.USER_TABLE + " WHERE "+Const.USERS_NAME + "=?";
+        String select = "SELECT * FROM "+ Const.USERS_TABLE + " WHERE "+Const.USERS_NAME + "=?";
         try {
             PreparedStatement prSt =getDbConnection().prepareStatement(select);
             prSt.setString(1, user.getName());
@@ -82,7 +77,7 @@ public class DatabaseHandler extends config {
         PreparedStatement pstmt = null;
 
         try {
-            String insert = "SELECT * FROM " + Const.USER_TABLE + " WHERE "+Const.USERS_NAME + "=? AND "
+            String insert = "SELECT * FROM " + Const.USERS_TABLE + " WHERE "+Const.USERS_NAME + "=? AND "
                     +Const.USERS_PASSWORD+"=?";
             PreparedStatement prSt =getDbConnection().prepareStatement(insert);
 //            prSt.setString(1, user.getName());
@@ -97,7 +92,7 @@ public class DatabaseHandler extends config {
     }
     public boolean CheckUserIndb(String name){
         ResultSet resSet = null;
-        String select = "SELECT * FROM "+ Const.USER_TABLE + " WHERE "+Const.USERS_NAME + "=?";
+        String select = "SELECT * FROM "+ Const.USERS_TABLE + " WHERE "+Const.USERS_NAME + "=?";
         try {
             PreparedStatement prSt =getDbConnection().prepareStatement(select);
             prSt.setString(1, name);
@@ -120,5 +115,133 @@ public class DatabaseHandler extends config {
             return true;
         }
         return false;
+    }
+    public void NewsUpload(String user, String name, String comment){
+        try {
+            String insert = "INSERT INTO "+Const.NEWS_TABLE +"("+Const.NEWS_USERNAME+","+Const.NEWS_CONTENTOFPOST+","
+                    +Const.NEWS_NAMEOFPOST+","+Const.NEWS_PIC+")"+"VALUES(?,?,?,?)";
+            PreparedStatement prSt =getDbConnection().prepareStatement(insert);
+            prSt.setString(1, user);
+            prSt.setString(2, comment);
+            prSt.setString(3, name);
+            prSt.setObject(4,null);
+            prSt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+    public ResultSet NewsSelect(){
+        ResultSet result = null;
+        String select = "SELECT * FROM "+ Const.NEWS_TABLE;
+        try {
+            PreparedStatement prSt =getDbConnection().prepareStatement(select);
+            result = prSt.executeQuery();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public void PostUpload(String user, String name, String comment){
+        try {
+            String insert = "INSERT INTO "+Const.POSTS_TABLE +"("+Const.POSTS_NAMEOFPOST+","+Const.POSTS_CONTENTOFPOST+"," + Const.POSTS_USERNAME+")"+"VALUES(?,?,?)";
+            PreparedStatement prSt =getDbConnection().prepareStatement(insert);
+            prSt.setString(1, name);
+            prSt.setString(2, comment);
+            prSt.setString(3, user);
+            prSt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+    public ResultSet PostSelect(){
+        ResultSet result = null;
+        String select = "SELECT * FROM "+ Const.POSTS_TABLE;
+        try {
+            PreparedStatement prSt =getDbConnection().prepareStatement(select);
+            result = prSt.executeQuery();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public void PostUpdate(String old_name, String new_name, String post){
+        try {
+            PreparedStatement prSt = null;
+            String sql = "UPDATE " + Const.POSTS_TABLE + " SET " + Const.POSTS_NAMEOFPOST + " = ? , " + Const.POSTS_CONTENTOFPOST + " = ?  WHERE " + Const.POSTS_NAMEOFPOST + " = ?";
+            prSt = getDbConnection().prepareStatement(sql);
+            prSt.setString(1, new_name);
+            prSt.setString(2, post);
+            prSt.setString(3, old_name);
+            prSt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+    public ResultSet SearchList(){
+        ResultSet result = null;
+        String select = "SELECT * FROM "+ Const.USERS_TABLE;
+        try {
+            PreparedStatement prSt =getDbConnection().prepareStatement(select);
+            result = prSt.executeQuery();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public void NumOfPeopleUpdate(){
+        try {
+            DatabaseHandler dbhandler = new DatabaseHandler();
+            ResultSet data = dbhandler.NumOfPeopleSelect();
+            data.next();
+            int num = data.getInt("num");
+            PreparedStatement prSt = null;
+            String sql = "UPDATE " + Const.NUM_OF_PEOPLE_TABLE + " SET " + Const.NUM_OF_PEOPLE_NUM + " = ?";
+            prSt = getDbConnection().prepareStatement(sql);
+            prSt.setInt(1, num + 1);
+            prSt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+    public ResultSet NumOfPeopleSelect(){
+        ResultSet result = null;
+        String select = "SELECT * FROM "+ Const.NUM_OF_PEOPLE_TABLE;
+        try {
+            PreparedStatement prSt =getDbConnection().prepareStatement(select);
+            result = prSt.executeQuery();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public void RoleUpdate(String role, String name){
+        try {
+            PreparedStatement prSt = null;
+            String sql = "UPDATE " + Const.USERS_TABLE + " SET " + Const.USERS_ROLE + " = ?" + " WHERE " + Const.USERS_NAME + " = ?";
+            prSt = getDbConnection().prepareStatement(sql);
+            prSt.setString(1, role);
+            prSt.setString(2, name);
+            prSt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
     }
 }

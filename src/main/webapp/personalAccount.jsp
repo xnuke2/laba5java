@@ -1,8 +1,15 @@
+<%@ page import="app.servlets.DatabaseHandler" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="java.io.OutputStream" %>
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="app.servlets.Const" %>
+<%@ page import="java.sql.Blob" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Personal account</title>
     <link rel="stylesheet" href="styleMain.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <!-- шапка сайта -->
@@ -51,19 +58,31 @@
     </script>
     <div class="backColor glow-on-hover">
         <div class="in">
-                <span>
-                    Счётчик вошедших:
-                </span>
-            <span id = "logined">
+            <span>
+                Счётчик вошедших:
+            </span>
+            <%--<span id = "logined">
                     1000
-                </span>
+                </span>--%>
+            <%
+                DatabaseHandler dbhandlercount = new DatabaseHandler();
+                ResultSet datacount = dbhandlercount.NumOfPeopleSelect();
+                while (datacount.next()){
+                    String num = datacount.getString("num");
+                    out.println("<span>"+ num +"</span>");
+                }
+            %>
         </div>
     </div>
+
     <button onclick="location.href='/laba5java/'" class="glow-on-hover">
         Главная
     </button>
     <button onclick="location.href='/laba5java/add'" class="glow-on-hover">
         Регистрация
+    </button>
+    <button onclick="location.href='/laba5java/list'" class = "glow-on-hover">
+        Поиск
     </button>
 
     <%
@@ -81,17 +100,13 @@
 <div class="window">
     <form method="post" enctype="multipart/form-data">
         <div>
-            <%
-                out.println("<img src=\"personalAccount.jsp?"+" your_name="+request.getSession().getAttribute("userName")+"\" width=\"50\" height=\"50\" />");
-            %>
-
+            <img src="getImage.jsp?" height="50px" width="50px"/>
+            <!--<img src="personalAccountServlet?" width="50px" height="50px" alt="pfp">-->
         <label>Name:</label>
         <%
             if(request.getSession().getAttribute("userName") != null){
                 out.println("<input type=\"text\" name=\"name\" size=\"50\" value=\"" +
                         request.getSession().getAttribute("userName") + "\"/>");
-//                out.println("<div class=backColor class=glow-on-hover> <div class="+"in"+
-//                        "> <span>"+request.getSession().getAttribute("userName")+" </span> </div> </div>");
             }else {
                 out.println("<input type=\"text\" name=\"Name\" size=\"50\" value=\"" +
                         "error" + "\"/>");
@@ -120,8 +135,35 @@
             <label>Profile Photo: </label>
             <input type="file" name="photo" size="50" />
         </div>
-        <input type="submit">
+        <input type="submit" name="submit" value="Отправить">
     </form>
 </div>
+<div class="news">
+    <div id="left">
+    Личные посты
+    <%
+        DatabaseHandler dbhandler = new DatabaseHandler();
+        ResultSet data = dbhandler.PostSelect();
+        out.println(request.getSession().getAttribute("userName"));
+        while(data.next()) {
+            if(data.getString("UserName").equals(request.getSession().getAttribute("userName"))){
+                String name = data.getString("NameOfPost");
+                String post = data.getString("ContentOfPost");
+                String user = data.getString("UserName");
+                out.println("<div><label>" + "<h1>" + name + "</h1>" + " " + post + " by: " + user + "</label></div>");
+            }
+        }
+    %>
+    </div>
+</div>
+<form method="post">
+    <div class="ear">
+        <label>Название поста:</label>
+        <input type="text" name="name">
+        <label>Пост:</label>
+        <input type="text" id="qwerty" name="posts">
+    </div>
+    <input type="submit" name="submit" value="submit">
+</form>
 </body>
 </html>

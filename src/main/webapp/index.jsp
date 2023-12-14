@@ -1,12 +1,18 @@
 <%@ page import="app.entities.User" %>
+<%@ page import="javax.lang.model.element.Element" %>
+<%@ page import="static jdk.internal.vm.PostVMInitHook.run" %>
+<%@ page import="app.servlets.DatabaseHandler" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="com.sun.jdi.StringReference" %>
+<%@ page import="javax.xml.crypto.Data" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>My super project!</title>
+        <title>Main</title>
         <link rel="stylesheet" href="styleMain.css">
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
     <!-- шапка сайта -->
@@ -58,9 +64,17 @@
                 <span>
                     Счётчик вошедших:
                 </span>
-                <span id = "logined">
+                <%--<span id = "logined">
                     1000
-                </span>
+                </span>--%>
+                <%
+                    DatabaseHandler dbhandlercount = new DatabaseHandler();
+                    ResultSet datacount = dbhandlercount.NumOfPeopleSelect();
+                    while (datacount.next()){
+                        String num = datacount.getString("num");
+                        out.println("<span>"+ num +"</span>");
+                    }
+                %>
             </div>
         </div>
         <button onclick="location.href='/laba5java/'" class="glow-on-hover">
@@ -69,7 +83,9 @@
         <button onclick="location.href='/laba5java/add'" class="glow-on-hover">
             Регистрация
         </button>
-        <button onclick="location.href='/laba5java/list'" class = "glow-on-hover">Поиск</button>
+        <button onclick="location.href='/laba5java/list'" class = "glow-on-hover">
+            Поиск
+        </button>
 
         <%
             if(request.getSession().getAttribute("userName") != null){
@@ -83,5 +99,33 @@
             }
         %>
     </div>
+    <div class="news" id="newss">
+        <h1>
+            Новостная лента
+        </h1>
+        <%
+            DatabaseHandler dbhandlernews = new DatabaseHandler();
+            ResultSet datanews = dbhandlernews.NewsSelect();
+            while (datanews.next()){
+                String user = datanews.getString("UserName").trim();
+                String comment = datanews.getString("ContentOfPost");
+                String name = datanews.getString("NameOfPost");
+                out.println("<div><label>" + "author: " + user + " " + "<h1>" + name + "</h1>" + " " + comment + "</label></div>");
+            }
+        %>
+    </div>
+    <%
+        if(request.getSession().getAttribute("userName") != null){
+            DatabaseHandler handler = new DatabaseHandler();
+            ResultSet tmp = handler.getUser(new User(request.getSession().getAttribute("userName").toString(),"12345678"));
+            if(tmp.next() && (tmp.getString("role").equals("admin") || tmp.getString("role").equals("moderator"))){
+                out.println("<form method=\"post\"><div class=\"ear\">" +
+                        "<label>Название поста:</label><input type=\"text\" name=\"name\">" +
+                        "<label>Пост:</label><input type=\"text\" id=\"qwerty\" name=\"news\">" +
+                        "<button id=\"sub\" type=\"submit\">submit</button>" +
+                        "</div></form>");
+            }
+        }
+    %>
     </body>
 </html>
