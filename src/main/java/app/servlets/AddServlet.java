@@ -48,6 +48,6 @@ public class AddServlet extends HttpServlet {
         dbhandler.singUpUser(user);
         dbhandler.NumOfPeopleUpdate();
         req.getSession().setAttribute("userName", name);
-        doGet(req, resp);
+        resp.sendRedirect(req.getContextPath() + "/personalAccount");
     }
 }

@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-    <!--Шапка сайта-->
+    <!-- шапка сайта -->
     <div class="profile-head" >
         <script type="text/javascript">
             var currentDate = new Date(<%=request.getAttribute("time")%>);
@@ -63,9 +63,7 @@
                 <span>
                     Счётчик вошедших:
                 </span>
-                <%--<span id = "logined">
-                    1000
-                </span>--%>
+
                 <%
                     DatabaseHandler dbhandlercount = new DatabaseHandler();
                     ResultSet datacount = dbhandlercount.NumOfPeopleSelect();
@@ -79,9 +77,7 @@
         <button onclick="location.href='/laba5java/'" class="glow-on-hover">
             Главная
         </button>
-        <button onclick="location.href='/laba5java/add'" class="glow-on-hover">
-            Регистрация
-        </button>
+
         <button onclick="location.href='/laba5java/list'" class = "glow-on-hover">
             Поиск
         </button>
@@ -95,6 +91,9 @@
             }else {
                 out.println("<button onclick=\"location.href='/laba5java/login'\" class=\"glow-on-hover\">\n" +
                         "Вход\n" + "</button>");
+                out.println("    <button onclick=\"location.href='/laba5java/add'\" class=\"glow-on-hover\">\n" +
+                        "        Регистрация\n" +
+                        "    </button>");
             }
         %>
     </div>
