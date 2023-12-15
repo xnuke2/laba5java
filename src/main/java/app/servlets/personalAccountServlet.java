@@ -28,7 +28,7 @@ public class personalAccountServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getParameter("exit").equals("exit")){
+        if(req.getParameter("submit").equals("exit")){
             req.getSession().setAttribute("userName", null);
             resp.sendRedirect(req.getContextPath());
             return;

@@ -97,7 +97,7 @@
 </div>
 <div class="window">
     <form method="post">
-        <input type="submit" name="exit" value="exit">
+        <input type="submit" name="submit" value="exit">
     </form>
 
     <form method="post" enctype="multipart/form-data">
