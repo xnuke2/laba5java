@@ -21,7 +21,7 @@ public class ListServlet extends HttpServlet {
     }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-        if (req.getParameter("find").equals("find")){
+        if (req.getParameter("submit").equals("find")){
             req.getSession().setAttribute("findBy",req.getParameter("findBy"));
             doGet(req,resp);
             return;

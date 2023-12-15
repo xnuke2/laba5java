@@ -100,7 +100,7 @@
     </div>
     <form method="post">
         <input type="text" name="findBy">
-        <input type="submit" name="find" value="find">
+        <input type="submit" name="submit" value="find">
     </form>
     <%
         if (request.getAttribute("Error") != null) {

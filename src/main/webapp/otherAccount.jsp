@@ -1,6 +1,6 @@
 <%@ page import="app.entities.User" %>
 <%@ page import="javax.lang.model.element.Element" %>
-<%@ page import="static jdk.internal.vm.PostVMInitHook.run" %>
+
 <%@ page import="app.servlets.DatabaseHandler" %>
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="com.sun.jdi.StringReference" %>
@@ -102,31 +102,32 @@
     <%
         DatabaseHandler dbhandler = new DatabaseHandler();
         ResultSet data = dbhandler.PostSelect();
-        ResultSet tmp = dbhandler.getUser(new User(request.getSession().getAttribute("userName").toString(),"12345678"));
+        //ResultSet tmp = dbhandler.getUser(new User(request.getSession().getAttribute("userName").toString(),"12345678"));
         out.println(request.getSession().getAttribute("user"));
-        if(tmp.next() && tmp.getString("role").equals("admin")){
-            while(data.next()) {
-                if(data.getString("UserName").equals(request.getSession().getAttribute("user"))){
-                    String name = data.getString("NameOfPost");
-                    String post = data.getString("ContentOfPost");
-                    String user = data.getString("UserName");
-                    out.println("<form method=\"post\"><div id=\"redactable\">" +
-                            "<label>" + "<h1>" + name + "</h1>" + " " + post + " by: " + user + "</label></div>" +
-                            "<label>Название поста:</label><input name=\"name\"><label>пост:</label><input name=\"post\">" +
-                            "<button name=\"redact\" value=\""+name+"\" type=\"submit\">Редактировать</button></form>");
-                }
+        while(data.next()) {
+            if(data.getString("UserName").equals(request.getSession().getAttribute("user"))){
+                String name = data.getString("NameOfPost");
+                String post = data.getString("ContentOfPost");
+                String user = data.getString("UserName");
+                out.println("<div id=\"redactable\"><label>" + "<h1>" + name + "</h1>" + " " + post + " by: " + user + "</label></div>");
             }
         }
-        else{
-            while(data.next()) {
-                if(data.getString("UserName").equals(request.getSession().getAttribute("user"))){
-                    String name = data.getString("NameOfPost");
-                    String post = data.getString("ContentOfPost");
-                    String user = data.getString("UserName");
-                    out.println("<div id=\"redactable\"><label>" + "<h1>" + name + "</h1>" + " " + post + " by: " + user + "</label></div>");
-                }
-            }
-        }
+//        if(tmp.next() && tmp.getString("role").equals("admin")){
+//            while(data.next()) {
+//                if(data.getString("UserName").equals(request.getSession().getAttribute("user"))){
+//                    String name = data.getString("NameOfPost");
+//                    String post = data.getString("ContentOfPost");
+//                    String user = data.getString("UserName");
+//                    out.println("<form method=\"post\"><div id=\"redactable\">" +
+//                            "<label>" + "<h1>" + name + "</h1>" + " " + post + " by: " + user + "</label></div>" +
+//                            "<label>Название поста:</label><input name=\"name\"><label>пост:</label><input name=\"post\">" +
+//                            "<button name=\"redact\" value=\""+name+"\" type=\"submit\">Редактировать</button></form>");
+//                }
+//            }
+//        }
+//        else{
+//
+//        }
     %>
 </div>
 <%
