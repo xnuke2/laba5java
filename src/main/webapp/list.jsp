@@ -98,42 +98,55 @@
             }
         %>
     </div>
+    <form method="post">
+        <input type="text" name="findBy">
+        <input type="submit" name="find" value="find">
+    </form>
     <%
         if (request.getAttribute("Error") != null) {
             out.println("<p>" + request.getAttribute("Error") + " </p>");
             request.setAttribute("Error",null);
         }
-        if(request.getSession().getAttribute("userName") != null){
+
             DatabaseHandler dbhandler = new DatabaseHandler();
-            ResultSet data = dbhandler.SearchList();
-            ResultSet tmp = dbhandler.getUser(new User(request.getSession().getAttribute("userName").toString(),"12345678"));
-            if(tmp.next() && (tmp.getString("role").equals("admin"))){
-                while(data.next()){
-                    String user = data.getString("Name");
-                    out.println("<form method=\"post\">" +
-                            "<div class=\"ear\">" +
-                            "<button name=\"submit\" type=\"submit\" value=\"submit\" onclick=\"location.href='/laba5java/otherAccount'\">" +
-                            "<input name=\"user\" value=\""+user+"\" onkeyup=\"this.value = this.value.replace(/[^\\d]/g,'');\">" +
-                            "</button> " +
-                            "<input list=\"listing\" type=\"text\" id=\"qwerty\" name=\"role\">" +
-                            "<datalist id=\"listing\">\n" + "<option value=\"moderator\"></option>\n" + "<option value=\"basic\"></option>" +
-                            "</datalist>" +
-                            "<button name=\"submit\" value=\"Change\" type=\"submit\" onclick=\"request.getSession().setAttribute(\"name\","+ user +")\">Изменить роль</button>" +
-                            "</div>" +
-                            "</form>");
-                }
+            ResultSet data;
+            //ResultSet tmp = dbhandler.getUser(new User(request.getSession().getAttribute("userName").toString(),"12345678"));
+
+            if(request.getSession().getAttribute("findBy")==null){
+                data = dbhandler.SearchList();
+            }else {
+                data = dbhandler.SearchList((String)request.getSession().getAttribute("findBy"));
+                if(request.getSession().getAttribute("findBy")!="")
+                    out.println("<h3>результаты поиска по "+(String)request.getSession().getAttribute("findBy") +" </h3>");
             }
-            else{
-                while(data.next()){
-                    String user = data.getString("Name");
-                    out.println("<form method=\"post\">" + "<div class=\"ear\">" +
-                            "<button name=\"submit\" value=\"submit\" type=\"submit\">" +
-                            "<input name=\"user\" value=\""+user+"\" onkeyup=\"this.value = this.value.replace(/[^\\]/g,'');\">" +
-                            "</button>" +
-                            "</div>" + "</form>");
-                }
+            while(data.next()){
+                String user = data.getString("Name");
+                out.println("<form method=\"post\">" + "<div class=\"ear\">" +
+                        "<button name=\"submit\" value=\"submit\" type=\"submit\">" +
+                        "<input name=\"user\" value=\""+user+"\" onkeyup=\"this.value = this.value.replace(/[^\\]/g,'');\">" +
+                        "</button>" +
+                        "</div>" + "</form>");
             }
-        }
+        request.getSession().setAttribute("findBy",null);
+            //if(tmp.next() && (tmp.getString("role").equals("admin"))){
+
+//                while(data.next()){
+//                    String user = data.getString("Name");
+//                    out.println("<form method=\"post\">" +
+//                            "<div class=\"ear\">" +
+//                            "<button name=\"submit\" type=\"submit\" value=\"submit\" onclick=\"location.href='/laba5java/otherAccount'\">" +
+//                            "<input name=\"user\" value=\""+user+"\" onkeyup=\"this.value = this.value.replace(/[^\\d]/g,'');\">" +
+//                            "</button> " +
+//                            "<input list=\"listing\" type=\"text\" id=\"qwerty\" name=\"role\">" +
+//                            "<datalist id=\"listing\">\n" + "<option value=\"moderator\"></option>\n" + "<option value=\"basic\"></option>" +
+//                            "</datalist>" +
+//                            "<button name=\"submit\" value=\"Change\" type=\"submit\" onclick=\"request.getSession().setAttribute(\"name\","+ user +")\">Изменить роль</button>" +
+//                            "</div>" +
+//                            "</form>");
+//                }
+
+
+
     %>
     <!--<input name="user" value="awdawd" onkeyup="this.value = this.value.replace(/[^\\]/g,'');">-->
     <%--<div class="ear">

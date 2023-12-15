@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
             if (result.next()){
                 if(result.getString(Const.USERS_PASSWORD).equals(password)){
                     req.getSession().setAttribute("userName", name);
-                    doGet(req, resp);
+                    resp.sendRedirect(req.getContextPath() + "/personalAccount");
                     return;
                 }
 

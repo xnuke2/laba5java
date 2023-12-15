@@ -114,6 +114,7 @@ public class DatabaseHandler extends config {
         if(counter>=1){
             return true;
         }
+
         return false;
     }
     public void NewsUpload(String user, String name, String comment){
@@ -190,6 +191,27 @@ public class DatabaseHandler extends config {
     public ResultSet SearchList(){
         ResultSet result = null;
         String select = "SELECT * FROM "+ Const.USERS_TABLE;
+        try {
+            PreparedStatement prSt =getDbConnection().prepareStatement(select);
+            result = prSt.executeQuery();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public static String quote(String s) {
+        return new StringBuilder()
+                .append('\'')
+                .append(s)
+                .append('\'')
+                .toString();
+    }
+    public ResultSet SearchList(String name){
+
+        ResultSet result = null;
+        String select = "SELECT * FROM "+ Const.USERS_TABLE+ " WHERE " + Const.USERS_NAME +" LIKE "+quote(name+"%");
         try {
             PreparedStatement prSt =getDbConnection().prepareStatement(select);
             result = prSt.executeQuery();

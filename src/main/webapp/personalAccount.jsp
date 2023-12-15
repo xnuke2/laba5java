@@ -98,6 +98,10 @@
     %>
 </div>
 <div class="window">
+    <form method="post">
+        <input type="submit" name="exit" value="exit">
+    </form>
+
     <form method="post" enctype="multipart/form-data">
         <div>
             <img src="getImage.jsp?" height="50px" width="50px"/>

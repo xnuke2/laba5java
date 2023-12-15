@@ -28,6 +28,11 @@ public class personalAccountServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if(req.getParameter("exit").equals("exit")){
+            req.getSession().setAttribute("userName", null);
+            resp.sendRedirect(req.getContextPath());
+            return;
+        }
         if(req.getParameter("submit").equals("submit")){
             req.setAttribute("Error", null);
             String comment = req.getParameter("posts").trim();

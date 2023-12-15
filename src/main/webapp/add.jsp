@@ -92,7 +92,8 @@
             }
         %>
     </div>
-
+    <button onclick="<% request.getSession().setAttribute("userName",null);%> location.href">
+    </button>
         <div>
             <%
                 if (request.getAttribute("Error") != null) {

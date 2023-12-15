@@ -17,10 +17,16 @@ public class ListServlet extends HttpServlet {
         req.setAttribute("time", new java.util.Date().getTime());
         RequestDispatcher requestDispatcher = req.getRequestDispatcher("list.jsp");
         requestDispatcher.forward(req, resp);
+
     }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-        if(req.getParameter("submit").equals("Change")){
+        if (req.getParameter("find").equals("find")){
+            req.getSession().setAttribute("findBy",req.getParameter("findBy"));
+            doGet(req,resp);
+            return;
+        }
+        if( req.getParameter("submit").equals("Change")){
             req.setAttribute("Error", null);
             String role = req.getParameter("role");
             String name = req.getParameter("user");

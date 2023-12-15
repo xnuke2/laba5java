@@ -1,6 +1,6 @@
 <%@ page import="app.entities.User" %>
 <%@ page import="javax.lang.model.element.Element" %>
-<%@ page import="static jdk.internal.vm.PostVMInitHook.run" %>
+
 <%@ page import="app.servlets.DatabaseHandler" %>
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="com.sun.jdi.StringReference" %>
