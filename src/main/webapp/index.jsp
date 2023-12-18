@@ -12,7 +12,7 @@
         <meta charset="UTF-8">
         <title>Main</title>
         <link rel="stylesheet" href="styleMain.css">
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
     <!-- шапка сайта -->
@@ -103,13 +103,31 @@
             Новостная лента
         </h1>
         <%
-            DatabaseHandler dbhandlernews = new DatabaseHandler();
-            ResultSet datanews = dbhandlernews.NewsSelect();
-            while (datanews.next()){
-                String user = datanews.getString("UserName").trim();
-                String comment = datanews.getString("ContentOfPost");
-                String name = datanews.getString("NameOfPost");
-                out.println("<div><label>" + "author: " + user + " " + "<h1>" + name + "</h1>" + " " + comment + "</label></div>");
+            if (request.getAttribute("Error") != null) {
+                out.println("<p>" + request.getAttribute("Error") + " </p>");
+                request.setAttribute("Error",null);
+            }
+        %>
+        <%
+            if(request.getSession().getAttribute("userName")!=null){
+                DatabaseHandler dbhandlernews = new DatabaseHandler();
+                ResultSet datanews = dbhandlernews.NewsSelect();
+                while (datanews.next()) {
+                    String author = datanews.getString("UserName").trim();
+                    String comment = datanews.getString("ContentOfPost");
+                    String name = datanews.getString("NameOfPost");
+                    String userName = (String)request.getSession().getAttribute("userName");
+                    String tmp1= "<form method=\"post\"><div class=\"news\"><label>" + "author: " + author + " " + "<h1>" + name + "</h1>" + " " + comment + "</label><button name=\"submit\" type=\"submit\" value=\""+name+"/"+comment+"/"+author+"/"+userName+"\"> Добавить в избранное </button>";
+
+                    //out.println("<form method=\"post\"><div class=\"news\"><label>" + "author: " + author + " " + "<h1>" + name + "</h1>" + " " + comment + "</label><button name=\"submit\" type=\"submit\" value=\""+name+"/"+comment+"/"+author+"/"+userName+"\"> Добавить в избранное </button></form></div>");
+                    DatabaseHandler dbh = new DatabaseHandler();
+                    ResultSet tmp = dbh.getUser(new User(request.getSession().getAttribute("userName").toString(),"12345678"));
+                    if(tmp.next() && (tmp.getString("role").equals("admin") || tmp.getString("role").equals("moderator"))){
+                        tmp1=tmp1+ "<button type=\"submit\" name=\"submit\" value=\""+name+"\">Удалить</button>";
+                    }
+                    tmp1=tmp1+"</div></form>";
+                    out.println(tmp1);
+                }
             }
         %>
     </div>
@@ -121,7 +139,7 @@
                 out.println("<form method=\"post\"><div class=\"ear\">" +
                         "<label>Название поста:</label><input type=\"text\" name=\"name\">" +
                         "<label>Пост:</label><input type=\"text\" id=\"qwerty\" name=\"news\">" +
-                        "<button id=\"sub\" type=\"submit\">submit</button>" +
+                        "<button id=\"sub\" name=\"submit\" type=\"submit\" value=\"submit\">submit</button>" +
                         "</div></form>");
             }
         }

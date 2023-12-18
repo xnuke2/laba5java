@@ -4,12 +4,13 @@
 <%@ page import="java.sql.PreparedStatement" %>
 <%@ page import="app.servlets.Const" %>
 <%@ page import="java.sql.Blob" %>
+<%@ page import="app.entities.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Personal account</title>
     <link rel="stylesheet" href="styleMain.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <!-- шапка сайта -->
@@ -95,53 +96,70 @@
         }
     %>
 </div>
-<div class="window">
-    <form method="post">
-        <input type="submit" name="submit" value="exit">
-    </form>
-
-    <form method="post" enctype="multipart/form-data">
-        <div>
-            <img src="getImage.jsp?" height="50px" width="50px"/>
-            <!--<img src="personalAccountServlet?" width="50px" height="50px" alt="pfp">-->
-        <label>Name:</label>
-        <%
-            if(request.getSession().getAttribute("userName") != null){
-                out.println("<input type=\"text\" name=\"name\" size=\"50\" value=\"" +
-                        request.getSession().getAttribute("userName") + "\"/>");
-            }else {
-                out.println("<input type=\"text\" name=\"Name\" size=\"50\" value=\"" +
-                        "error" + "\"/>");
-            }
-        %>
+<div class="textcols">
+    <div class="textcols-item">
+        <div class="window">
+            <form method="post" enctype="multipart/form-data">
+                <div>
+                    <img src="getImage.jsp?" height="50px" width="50px"/>
+                    <!--<img src="personalAccountServlet?" width="50px" height="50px" alt="pfp">-->
+                    <label>Name:</label>
+                    <%
+                        if(request.getSession().getAttribute("userName") != null){
+                            out.println("<input type=\"text\" name=\"name\" size=\"50\" value=\"" +
+                                    request.getSession().getAttribute("userName") + "\"/>");
+                        }else {
+                            out.println("<input type=\"text\" name=\"Name\" size=\"50\" value=\"" +
+                                    "error" + "\"/>");
+                        }
+                    %>
+                </div>
+                <div>
+                    <label>Старый пароль:</label>
+                    <input type="text" name="oldPassword" size="50" />
+                </div>
+                <div>
+                    <label>Новый пароль:</label>
+                    <input type="text" name="newPassword" size="50" />
+                </div>
+                <div>
+                    <%
+                        if (request.getAttribute("Error") != null) {
+                            out.println("<p>" + request.getAttribute("Error") + " </p>");
+                            request.setAttribute("Error",null);
+                        }
+                        if (request.getAttribute("message") != null) {
+                            out.println("<p> Данные изменены </p>");
+                            request.setAttribute("Error",null);
+                        }
+                    %>
+                    <label>Profile Photo: </label>
+                    <input type="file" name="photo" size="50" />
+                </div>
+                <input type="submit" name="submit" value="Отправить">
+            </form>
         </div>
+    </div>
+    <div class="textcols-item">
         <div>
-            <label>Старый пароль:</label>
-            <input type="text" name="oldPassword" size="50" />
-        </div>
-        <div>
-            <label>Новый пароль:</label>
-            <input type="text" name="newPassword" size="50" />
-        </div>
-        <div>
+            Избранное
             <%
-                if (request.getAttribute("Error") != null) {
-                    out.println("<p>" + request.getAttribute("Error") + " </p>");
-                    request.setAttribute("Error",null);
-                }
-                if (request.getAttribute("message") != null) {
-                    out.println("<p> Данные изменены </p>");
-                    request.setAttribute("Error",null);
+                DatabaseHandler dbfavhandler = new DatabaseHandler();
+                ResultSet favdata = dbfavhandler.FavPostSelect();
+                while(favdata.next()) {
+                    if(favdata.getString("FavUserName").equals(request.getSession().getAttribute("userName"))){
+                        String name = favdata.getString("NameOfFavPost");
+                        String post = favdata.getString("ContentOfFavPost");
+                        String author = favdata.getString("author");
+                        out.println("<div><label>" + "<h1>" + name + "</h1>" + " " + post + " by: " + author + "</label><form method=\"post\"><button type=\"submit\" name=\"submit\" value=\"deletefav\">Удалить из избранного</button></form></div>");
+                    }
                 }
             %>
-            <label>Profile Photo: </label>
-            <input type="file" name="photo" size="50" />
         </div>
-        <input type="submit" name="submit" value="Отправить">
-    </form>
+    </div>
 </div>
 <div class="news">
-    <div id="left">
+    <div class="left">
     Личные посты
     <%
         DatabaseHandler dbhandler = new DatabaseHandler();
@@ -167,5 +185,41 @@
     </div>
     <input type="submit" name="submit" value="submit">
 </form>
+<form method="post">
+    <input type="submit" name="submit" value="exit">
+</form>
+<%
+    if(request.getSession().getAttribute("userName") != null){
+        DatabaseHandler dbhandleradmin = new DatabaseHandler();
+        ResultSet tmp = dbhandleradmin.getUser(new User(request.getSession().getAttribute("userName").toString(),"12345678"));
+        if(tmp.next() && (tmp.getString("role").equals("admin"))){
+            out.println("<div class=\"ear\"><div><h2>Кабинет адимнистратора</h2>" +
+                    "<form method=\"post\" enctype=\"multipart/form-data\">" +
+                    "<div><input placeholder=\"Введите имя\" type=\"text\" name=\"newuser\">" +
+                    "<input placeholder=\"Введите пароль\" type=\"text\" name=\"newpassword\">" +
+                    "<select type=\"text\" name=\"newrole\"><option value=\"moderator\">moderator</option>\n" +
+                    "<option value=\"basic\">basic</option><select>" +
+                    "<input type=\"file\" name=\"photo\" size=\"50\">" +
+                    "<button type=\"submit\" name=\"submit\" value=\"add\">Добавить учетную запись</button>" +
+                    "</div>" +
+                    "<div>" +
+                    "<input type=\"text\" name=\"findBy\">" +
+                    "<button type=\"submit\" name=\"submit\" value=\"delete\">Удалить учетную запись</button>" +
+                    "</div>" +
+                    "<input placeholder=\"Введите имя аккаунта\" name=\"User\">" +
+                    "<input placeholder=\"Введите новое имя\" name=\"newName\">" +
+                    "<input placeholder=\"Введите новый пароль\" name=\"newPassword\">" +
+                    "<select type=\"text\" name=\"newRole\"><option></option><option value=\"moderator\">moderator</option>\n" +
+                    "<option value=\"basic\">basic</option><select>" +
+                    "<input type=\"file\" name=\"newPhoto\" size=\"50\">" +
+                    "<button type=\"submit\" name=\"submit\" value=\"redact\">Редактировать данные</button>" +
+                    "</form></div></div>");
+        }
+    }
+    if (request.getAttribute("Errors") != null) {
+        out.println("<p>" + request.getAttribute("Errors") + " </p>");
+        request.setAttribute("Errors",null);
+    }
+%>
 </body>
 </html>

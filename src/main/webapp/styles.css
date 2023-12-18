@@ -19,6 +19,23 @@
     text-align: center;
 }
 
-#left{
+.left{
     float: left;
+}
+
+.right{
+    float: right;
+}
+
+.textcols {
+    white-space: nowrap;
+}
+.textcols-item {
+    white-space: normal;
+    display: inline-block;
+    width: 48%;
+    vertical-align: top;
+}
+.textcols .textcols-item:first-child {
+    margin-right: 4%;
 }

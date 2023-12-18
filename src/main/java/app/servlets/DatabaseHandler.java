@@ -57,6 +57,51 @@ public class DatabaseHandler extends config {
         }
 
     }
+    public void UpdateUser(String name, String newname, String newpassword, String newrole, InputStream file){
+        try {
+            PreparedStatement prSt = null;
+            String sql = "UPDATE " + Const.USERS_TABLE + " SET " + Const.USERS_NAME + " = ? , " + Const.USERS_PASSWORD + " = ? , " + Const.USERS_ROLE + " = ? , " + Const.USERS_USERPHOTO + " = ?  WHERE " + Const.USERS_NAME + " = ?";
+            prSt = getDbConnection().prepareStatement(sql);
+            prSt.setString(1, newname);
+            prSt.setString(2, newpassword);
+            prSt.setString(3, newrole);
+            prSt.setBlob(4, file);
+            prSt.setString(5, name);
+            prSt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+    public void SignUp(String name, String password, String role, InputStream file){
+        try {
+            String insert = "INSERT INTO "+Const.USERS_TABLE +"("+Const.USERS_NAME+","+Const.USERS_PASSWORD+","
+                    +Const.USERS_ROLE+","+Const.USERS_USERPHOTO+")"+"VALUES(?,?,?,?)";
+            PreparedStatement prSt =getDbConnection().prepareStatement(insert);
+            prSt.setString(1, name);
+            prSt.setString(2, password);
+            prSt.setString(3, role);
+            prSt.setBlob(4,file);
+            prSt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+    public void deleteUser(String user){
+        try {
+            String delete = "DELETE FROM "+ Const.USERS_TABLE + " WHERE " + Const.USERS_NAME + "=?";
+            PreparedStatement prSt =getDbConnection().prepareStatement(delete);
+            prSt.setString(1, user);
+            prSt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
     public ResultSet getUser(User user){
         ResultSet resSet = null;
         String select = "SELECT * FROM "+ Const.USERS_TABLE + " WHERE "+Const.USERS_NAME + "=?";
@@ -114,7 +159,27 @@ public class DatabaseHandler extends config {
         if(counter>=1){
             return true;
         }
-
+        return false;
+    }
+    public boolean CheckNewsIndb(String name){
+        ResultSet resSet = null;
+        String select = "SELECT * FROM "+ Const.NEWS_TABLE + " WHERE "+Const.NEWS_NAMEOFPOST + "=?";
+        try {
+            PreparedStatement prSt =getDbConnection().prepareStatement(select);
+            prSt.setString(1, name);
+            resSet = prSt.executeQuery();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        try {
+            while (resSet.next()){
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return false;
     }
     public void NewsUpload(String user, String name, String comment){
@@ -145,6 +210,18 @@ public class DatabaseHandler extends config {
             e.printStackTrace();
         }
         return result;
+    }
+    public void deleteNews(String name){
+        try {
+            String delete = "DELETE FROM "+ Const.NEWS_TABLE + " WHERE " + Const.NEWS_NAMEOFPOST + "=?";
+            PreparedStatement prSt =getDbConnection().prepareStatement(delete);
+            prSt.setString(1, name);
+            prSt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
     }
     public void PostUpload(String user, String name, String comment){
         try {
@@ -209,7 +286,6 @@ public class DatabaseHandler extends config {
                 .toString();
     }
     public ResultSet SearchList(String name){
-
         ResultSet result = null;
         String select = "SELECT * FROM "+ Const.USERS_TABLE+ " WHERE " + Const.USERS_NAME +" LIKE "+quote(name+"%");
         try {
@@ -252,18 +328,32 @@ public class DatabaseHandler extends config {
         }
         return result;
     }
-    public void RoleUpdate(String role, String name){
+    public void FavPostUpload(String name, String comment, String author, String userName){
         try {
-            PreparedStatement prSt = null;
-            String sql = "UPDATE " + Const.USERS_TABLE + " SET " + Const.USERS_ROLE + " = ?" + " WHERE " + Const.USERS_NAME + " = ?";
-            prSt = getDbConnection().prepareStatement(sql);
-            prSt.setString(1, role);
-            prSt.setString(2, name);
+            String insert = "INSERT INTO "+Const.FAVOURITE_TABLE +"("+Const.FAVOURITE_NAME+","+Const.FAVOURITE_CONTENT+"," + Const.FAVOURITE_USERNAME+"," + Const.FAVOURITE_AUTHOR+")"+"VALUES(?,?,?,?)";
+            PreparedStatement prSt =getDbConnection().prepareStatement(insert);
+            prSt.setString(1, name);
+            prSt.setString(2,comment);
+            prSt.setString(3,userName);
+            prSt.setString(4,author);
             prSt.executeUpdate();
         }catch (SQLException e){
             e.printStackTrace();
         }catch (ClassNotFoundException e){
             e.printStackTrace();
         }
+    }
+    public ResultSet FavPostSelect(){
+        ResultSet result = null;
+        String select = "SELECT * FROM "+ Const.FAVOURITE_TABLE;
+        try {
+            PreparedStatement prSt =getDbConnection().prepareStatement(select);
+            result = prSt.executeQuery();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return result;
     }
 }

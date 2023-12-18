@@ -10,7 +10,7 @@
 <head>
     <title>Other posts</title>
     <link rel="stylesheet" href="styleMain.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <!-- шапка сайта -->

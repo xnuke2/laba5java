@@ -26,32 +26,7 @@ public class ListServlet extends HttpServlet {
             doGet(req,resp);
             return;
         }
-        if( req.getParameter("submit").equals("Change")){
-            req.setAttribute("Error", null);
-            String role = req.getParameter("role");
-            String name = req.getParameter("user");
-            if(!(role.equals("moderator") || role.equals("basic"))){
-                req.setAttribute("Error", "Роль должна быть moderator или basic");
-                doGet(req, resp);
-                return;
-            }
-            DatabaseHandler dbhandler = new DatabaseHandler();
-            ResultSet tmp = dbhandler.getUser(new User(name, "12345678"));
-            try {
-                if(tmp.next()){
-                    String currole = tmp.getString("role");
-                    if(currole.equals("admin")){
-                        req.setAttribute("Error", "У админа нельзя изменить роль");
-                        doGet(req, resp);
-                        return;
-                    }
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            dbhandler.RoleUpdate(role, name);
-            doGet(req, resp);
-        } else if (req.getParameter("submit").equals("submit")) {
+        if (req.getParameter("submit").equals("submit")) {
             String user = req.getParameter("user");
             req.getSession().setAttribute("user", user);
             resp.sendRedirect("http://localhost:8080/laba5java/otherAccount");

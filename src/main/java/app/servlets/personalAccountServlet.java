@@ -28,6 +28,7 @@ public class personalAccountServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
         if(req.getParameter("submit").equals("exit")){
             req.getSession().setAttribute("userName", null);
             resp.sendRedirect(req.getContextPath());
@@ -53,6 +54,89 @@ public class personalAccountServlet extends HttpServlet {
             //String s = data.getString("NameOfPost");
             dbhandler.PostUpload(user, name, comment);
             doGet(req, resp);
+        }
+        if(req.getParameter("submit").equals("add")){
+            req.setAttribute("Errors", null);
+            String name = req.getParameter("newuser").trim();
+            String password = req.getParameter("newpassword").trim();
+            String role = req.getParameter("newrole").trim();
+            if(name.equals("")||password.equals("")||role.equals("")){
+                req.setAttribute("Errors", "Одно из полей пусто");
+                doGet(req, resp);
+                return;
+            }
+            if(password.length()<8){
+                req.setAttribute("Errors", "Пароль слишком короткий");
+                doGet(req, resp);
+                return;
+            }
+            DatabaseHandler dbhandler = new DatabaseHandler();
+            if(dbhandler.CheckUserIndb(name)){
+                req.setAttribute("Errors", "Пользователь с таким именем уже есть");
+                doGet(req, resp);
+                return;
+            }
+            InputStream inputStream = null;
+            Part filePart = req.getPart("photo");
+            if (filePart != null) {
+                inputStream = filePart.getInputStream();
+            }
+            /*User user = new User(name,password);
+            user.setRole(role);*/
+            dbhandler.SignUp(name,password,role,inputStream);
+            dbhandler.NumOfPeopleUpdate();
+            doGet(req, resp);
+            return;
+        }
+        if(req.getParameter("submit").equals("delete")){
+            String name = req.getParameter("findBy");
+            if(name.equals("") || name.equals("xnuke")){
+                req.setAttribute("Errors", "Введите логин аккаунта");
+                doGet(req, resp);
+                return;
+            }
+            DatabaseHandler dbhandler = new DatabaseHandler();
+            if(!dbhandler.CheckUserIndb(name)){
+                req.setAttribute("Error", "Пользователя с таким именем нет");
+                doGet(req, resp);
+                return;
+            }
+            dbhandler.deleteUser(name);
+            doGet(req, resp);
+            return;
+        }
+        if(req.getParameter("submit").equals("redact")){
+            String name = req.getParameter("User");
+            String newname = req.getParameter("newName");
+            String newpassword = req.getParameter("newPassword");
+            String newrole = req.getParameter("newRole");
+            if(name.equals("") || name.equals("xnuke")){
+                req.setAttribute("Errors", "Введите имя аккаунта");
+                doGet(req, resp);
+                return;
+            }
+            if(newname.equals("") || newpassword.equals("") || newrole.equals("")){
+                req.setAttribute("Errors", "Введите новые данные");
+                doGet(req, resp);
+                return;
+            }
+            InputStream inputStream = null;
+            Part filePart = req.getPart("photo");
+            if (filePart != null) {
+                inputStream = filePart.getInputStream();
+            }
+            DatabaseHandler dbhandler = new DatabaseHandler();
+            if(!dbhandler.CheckUserIndb(name)){
+                req.setAttribute("Errors", "Пользователя с таким именем нет");
+                doGet(req, resp);
+                return;
+            }
+            dbhandler.UpdateUser(name, newname, newpassword, newrole, inputStream);
+            doGet(req, resp);
+            return;
+        }
+        if(req.getParameter("submit").equals("deletefav")){
+
         }
         else {
             if (req.getSession().getAttribute("userName")==null){
