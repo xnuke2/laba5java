@@ -19,7 +19,37 @@ public class IndexServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         req.setCharacterEncoding("UTF-8");
-        if(req.getParameter("submit").equals("submit")){
+        if(req.getParameter("newName")!=null){
+            String comment = req.getParameter("newText").trim();
+            String name = req.getParameter("newName").trim();
+            String nam = req.getParameter("submit");
+            if(comment == ""){
+                req.setAttribute("Error", "Новость пуста");
+                doGet(req, resp);
+                return;
+            }
+            if(name == ""){
+                req.setAttribute("Error","Название пусто");
+                doGet(req, resp);
+                return;
+            }
+            DatabaseHandler dbhandlernews = new DatabaseHandler();
+            ResultSet datafav = dbhandlernews.FavPostSelect();
+//            if(dbhandlernews.CheckNewsIndb(name)){
+//                req.setAttribute("Error", "Новость с таким названием уже есть");
+//                doGet(req, resp);
+//                return;
+//            }
+            String parts[] = nam.split("/");
+            dbhandlernews.NewsUpdate(parts[0], name, comment);
+            //req.getSession().setAttribute("recordInsertedSuccessfully","true");
+            doGet(req, resp);
+            return;
+
+        }
+
+
+        else  if(req.getParameter("submit").equals("submit")){
             req.setAttribute("Error", null);
             String comment = req.getParameter("news").trim();
             String name = req.getParameter("name").trim();
@@ -57,15 +87,17 @@ public class IndexServlet extends HttpServlet {
                     doGet(req, resp);
                     return;
                 }
-                while(datanews.next()){
-                    String name = req.getParameter("submit");
+                String name = req.getParameter("submit");
+                while(datanews.next()) {
+
                     String nameofpost = datanews.getString("NameOfPost");
-                    if(req.getParameter("submit").equals(nameofpost)){
+                    if (req.getParameter("submit").equals(nameofpost)) {
                         dbhandlernews.deleteNews(nameofpost);
-                        doGet(req,resp);
+                        doGet(req, resp);
                         return;
                     }
-                    else if(req.getParameter("submit").equals(name)){
+                }
+                    if(req.getParameter("submit").equals(name)){
                         String parts[] = name.split("/");
                         while(datafav.next()){
                             if(datafav.getString("NameOfFavPost").equals(parts[0]) && datafav.getString("FavUserName").equals(parts[3])){
@@ -78,7 +110,7 @@ public class IndexServlet extends HttpServlet {
                         doGet(req, resp);
                         return;
                     }
-                }
+
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

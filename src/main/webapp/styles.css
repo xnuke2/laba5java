@@ -10,8 +10,10 @@
 
 .news{
     text-align: center;
-    align-content: center;
+    display: flow;
+    width: 50%;
     border: solid black;
+
 }
 
 #sub{
@@ -38,4 +40,10 @@
 }
 .textcols .textcols-item:first-child {
     margin-right: 4%;
+}
+.post{
+    width: revert-layer;
+    text-align: center;
+    display: block;
+    border: 2px solid #23a6d5;
 }

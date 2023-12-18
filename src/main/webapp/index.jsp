@@ -109,27 +109,41 @@
             }
         %>
         <%
-            if(request.getSession().getAttribute("userName")!=null){
-                DatabaseHandler dbhandlernews = new DatabaseHandler();
-                ResultSet datanews = dbhandlernews.NewsSelect();
-                while (datanews.next()) {
-                    String author = datanews.getString("UserName").trim();
-                    String comment = datanews.getString("ContentOfPost");
-                    String name = datanews.getString("NameOfPost");
-                    String userName = (String)request.getSession().getAttribute("userName");
-                    String tmp1= "<form method=\"post\"><div class=\"news\"><label>" + "author: " + author + " " + "<h1>" + name + "</h1>" + " " + comment + "</label><button name=\"submit\" type=\"submit\" value=\""+name+"/"+comment+"/"+author+"/"+userName+"\"> Добавить в избранное </button>";
-
-                    //out.println("<form method=\"post\"><div class=\"news\"><label>" + "author: " + author + " " + "<h1>" + name + "</h1>" + " " + comment + "</label><button name=\"submit\" type=\"submit\" value=\""+name+"/"+comment+"/"+author+"/"+userName+"\"> Добавить в избранное </button></form></div>");
+            DatabaseHandler dbhandlernews = new DatabaseHandler();
+            ResultSet datanews = dbhandlernews.NewsSelect();
+            while (datanews.next()) {
+                String author = datanews.getString("UserName").trim();
+                String comment = datanews.getString("ContentOfPost");
+                String name = datanews.getString("NameOfPost");
+                String userName = (String)request.getSession().getAttribute("userName");
+                String tmp1= "<form method=\"post\"><div class=\"post\"><label>" + "author: " + author + " " + "<h1>"
+                        + name + "</h1>" + " " + comment + "</label>";
+                if(request.getSession().getAttribute("userName")!=null){
+                    tmp1=tmp1+"<button name=\"submit\" type=\"submit\" value=\""+name +
+                            "/"+comment+"/"+author+"/"+userName+"\"> Добавить в избранное </button>";
                     DatabaseHandler dbh = new DatabaseHandler();
                     ResultSet tmp = dbh.getUser(new User(request.getSession().getAttribute("userName").toString(),"12345678"));
                     if(tmp.next() && (tmp.getString("role").equals("admin") || tmp.getString("role").equals("moderator"))){
-                        tmp1=tmp1+ "<button type=\"submit\" name=\"submit\" value=\""+name+"\">Удалить</button>";
+                        tmp1=tmp1+ "<button type=\"submit\" name=\"submit\" value=\""+name+"\">Удалить</button></form>";
+
+                        tmp1=tmp1+"        <div>\n" +
+                                "            <form method=\"post\">\n" +
+                                "                <p>Новое название</p><input type=\"text\" name=\"newName\" value=\""+name+"\">\n" +
+                                "                <p>Новый текст поста</p><input type=\"text\" name=\"newText\" value=\""+ comment +"\">\n <br>" +
+                                "                <button type=\"submit\" name=\"submit\" value=\""+name+"/"+comment+"/"+author+"/"+userName+"\">изменить</button>\n" +
+                                "            </form>\n" +
+                                "        </div>";
+                    }else {
+                        tmp1=tmp1+"</form>";
                     }
-                    tmp1=tmp1+"</div></form>";
-                    out.println(tmp1);
+                }else {
+                    tmp1=tmp1+"</form>";
                 }
+                tmp1=tmp1+"</div>";
+                out.println(tmp1);
             }
         %>
+
     </div>
     <%
         if(request.getSession().getAttribute("userName") != null){

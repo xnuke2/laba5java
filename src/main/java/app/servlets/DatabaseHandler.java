@@ -198,6 +198,20 @@ public class DatabaseHandler extends config {
             e.printStackTrace();
         }
     }
+    public void NewsUpdate(String lastName, String name, String comment){
+        try {
+            String insert = "UPDATE "+Const.NEWS_TABLE + " SET " + Const.NEWS_CONTENTOFPOST + " = ? , " + Const.NEWS_NAMEOFPOST + " = ?" + " WHERE " + Const.NEWS_NAMEOFPOST + " = ?";
+            PreparedStatement prSt =getDbConnection().prepareStatement(insert);
+            prSt.setString(1, comment);
+            prSt.setString(2, name);
+            prSt.setString(3, lastName);
+            prSt.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
     public ResultSet NewsSelect(){
         ResultSet result = null;
         String select = "SELECT * FROM "+ Const.NEWS_TABLE;
@@ -215,6 +229,10 @@ public class DatabaseHandler extends config {
         try {
             String delete = "DELETE FROM "+ Const.NEWS_TABLE + " WHERE " + Const.NEWS_NAMEOFPOST + "=?";
             PreparedStatement prSt =getDbConnection().prepareStatement(delete);
+            prSt.setString(1, name);
+            prSt.executeUpdate();
+            delete = "DELETE FROM "+ Const.FAVOURITE_TABLE + " WHERE " + Const.FAVOURITE_NAME + "=?";
+            prSt =getDbConnection().prepareStatement(delete);
             prSt.setString(1, name);
             prSt.executeUpdate();
         }catch (SQLException e){
