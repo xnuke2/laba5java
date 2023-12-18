@@ -141,7 +141,7 @@
         </div>
     </div>
     <div class="textcols-item">
-        <div>
+        <div class="news">
             Избранное
             <%
                 DatabaseHandler dbfavhandler = new DatabaseHandler();
@@ -159,7 +159,7 @@
     </div>
 </div>
 <div class="news">
-    <div class="left">
+    <div>
     Личные посты
     <%
         DatabaseHandler dbhandler = new DatabaseHandler();
@@ -174,20 +174,19 @@
             }
         }
     %>
+        <div class="ear">
+            <form method="post">
+                    <label>Название поста:</label>
+                    <input type="text" name="name">
+                    <label>Пост:</label>
+                    <input type="text" id="qwerty" name="posts">
+                    <input type="submit" name="submit" value="submit">
+            </form>
+        </div>
     </div>
 </div>
-<form method="post">
-    <div class="ear">
-        <label>Название поста:</label>
-        <input type="text" name="name">
-        <label>Пост:</label>
-        <input type="text" id="qwerty" name="posts">
-    </div>
-    <input type="submit" name="submit" value="submit">
-</form>
-<form method="post">
-    <input type="submit" name="submit" value="exit">
-</form>
+
+
 <%
     if(request.getSession().getAttribute("userName") != null){
         DatabaseHandler dbhandleradmin = new DatabaseHandler();
@@ -195,24 +194,25 @@
         if(tmp.next() && (tmp.getString("role").equals("admin"))){
             out.println("<div class=\"ear\"><div><h2>Кабинет адимнистратора</h2>" +
                     "<form method=\"post\" enctype=\"multipart/form-data\">" +
-                    "<div><input placeholder=\"Введите имя\" type=\"text\" name=\"newuser\">" +
+                    "<div style=\"border: 6px solid #8add6a;\" class=\"window\"><input placeholder=\"Введите имя\" type=\"text\" name=\"newuser\">" +
                     "<input placeholder=\"Введите пароль\" type=\"text\" name=\"newpassword\">" +
                     "<select type=\"text\" name=\"newrole\"><option value=\"moderator\">moderator</option>\n" +
                     "<option value=\"basic\">basic</option><select>" +
                     "<input type=\"file\" name=\"photo\" size=\"50\">" +
                     "<button type=\"submit\" name=\"submit\" value=\"add\">Добавить учетную запись</button>" +
                     "</div>" +
-                    "<div>" +
+                    "<div style=\"border: 6px solid #ff7272;\" class=\"window\">" +
                     "<input type=\"text\" name=\"findBy\">" +
                     "<button type=\"submit\" name=\"submit\" value=\"delete\">Удалить учетную запись</button>" +
                     "</div>" +
+                    "<div style=\"border: 6px solid #ffbb83;\" class=\"window\">"+
                     "<input placeholder=\"Введите имя аккаунта\" name=\"User\">" +
                     "<input placeholder=\"Введите новое имя\" name=\"newName\">" +
                     "<input placeholder=\"Введите новый пароль\" name=\"newPassword\">" +
                     "<select type=\"text\" name=\"newRole\"><option></option><option value=\"moderator\">moderator</option>\n" +
                     "<option value=\"basic\">basic</option><select>" +
                     "<input type=\"file\" name=\"newPhoto\" size=\"50\">" +
-                    "<button type=\"submit\" name=\"submit\" value=\"redact\">Редактировать данные</button>" +
+                    "<button type=\"submit\" name=\"submit\" value=\"redact\">Редактировать данные</button>" +"</div>"+
                     "</form></div></div>");
         }
     }
@@ -221,5 +221,8 @@
         request.setAttribute("Errors",null);
     }
 %>
+<form method="post">
+    <input type="submit" name="submit" value="exit">
+</form>
 </body>
 </html>
